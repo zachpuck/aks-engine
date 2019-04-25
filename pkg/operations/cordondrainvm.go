@@ -4,6 +4,7 @@
 package operations
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -40,6 +41,7 @@ func SafelyDrainNode(az armhelpers.AKSEngineClient, logger *log.Entry, masterURL
 	if err != nil {
 		return err
 	}
+	fmt.Println("SAFELYDRAINNODE CLIENT:", client)
 	return SafelyDrainNodeWithClient(client, logger, nodeName, timeout)
 }
 
@@ -69,6 +71,7 @@ func SafelyDrainNodeWithClient(client armhelpers.KubernetesClient, logger *log.E
 	logger.Infof("Node %s has been marked unschedulable.", nodeName)
 
 	//Evict pods in node
+	fmt.Println("SAFELYDRAIN TIMEOUT:", timeout)
 	drainOp := &drainOperation{client: client, node: node, logger: logger, timeout: timeout}
 	return drainOp.deleteOrEvictPodsSimple()
 }

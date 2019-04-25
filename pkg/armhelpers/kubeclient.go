@@ -5,6 +5,7 @@ package armhelpers
 
 import (
 	"time"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	v1 "k8s.io/api/core/v1"
@@ -40,6 +41,7 @@ func (az *AzureClient) GetKubernetesClient(masterURL, kubeConfig string, interva
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("GETCLIENT TIMEOUT:", timeout)
 	return &KubernetesClientSetClient{clientset: clientset, interval: interval, timeout: timeout}, nil
 }
 
@@ -148,6 +150,9 @@ func (c *KubernetesClientSetClient) WaitForDelete(logger *log.Entry, pods []v1.P
 	} else {
 		verbStr = "deleted"
 	}
+
+	fmt.Println("TIMEOUT ", c.timeout)
+	c.timeout = time.Duration(60)*time.Minute
 	err := wait.PollImmediate(c.interval, c.timeout, func() (bool, error) {
 		pendingPods := []v1.Pod{}
 		for i, pod := range pods {
