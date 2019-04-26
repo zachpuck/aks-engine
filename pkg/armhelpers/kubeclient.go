@@ -152,7 +152,6 @@ func (c *KubernetesClientSetClient) WaitForDelete(logger *log.Entry, pods []v1.P
 	}
 
 	fmt.Println("TIMEOUT ", c.timeout)
-	c.timeout = time.Duration(60)*time.Minute
 	err := wait.PollImmediate(c.interval, c.timeout, func() (bool, error) {
 		pendingPods := []v1.Pod{}
 		for i, pod := range pods {
